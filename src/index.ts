@@ -1,31 +1,25 @@
-import { Client, ProductResponse } from '../types';
-
-import {
-    PRODUCT_RESOURCE_PATH,
-    CATEGORY_RESOURCE_PATH
-} from './constants';
 import { createClient } from './utils';
-import Resource from './resources/Resource';
-import CategoryResponse from '../types/responses/category';
+import ActionManager from './action';
 
 export default class Storefront {
     url: string;
-    client: Client;
+    actions: ActionManager;
 
     constructor(url: string, key?: string) {
         this.url = url;
-        this.client = createClient(url, key);
+        this.actions = new ActionManager(createClient(url, key));
     }
 
-    getClient(): Client {
-        return this.client;
-    }
-
-    product(): Resource<ProductResponse> {
-        return new Resource<ProductResponse>(this.getClient(), PRODUCT_RESOURCE_PATH);
-    }
-
-    category(): Resource<CategoryResponse> {
-        return new Resource<CategoryResponse>(this.getClient(), CATEGORY_RESOURCE_PATH);
+    get product() {
+        return {
+            all: this.actions.get('product'),
+            get: this.actions.get('product/:product')
+        }
     }
 }
+
+const api = new Storefront('https://shopwaredemo.de');
+
+api.product.all()
+    .then(data => console.log(data))
+    .catch(err => console.log(err.response.status))

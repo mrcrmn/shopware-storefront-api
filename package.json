@@ -4,6 +4,7 @@
   "description": "An easy to use adaptor for the Shopware 6 storefront Api.",
   "main": "index.js",
   "scripts": {
+    "build": "node_modules/.bin/tsc",
     "test": "test"
   },
   "author": "Marco Reimann",
